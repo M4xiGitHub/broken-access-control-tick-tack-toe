@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+import { Socket, io } from 'socket.io-client';
 
 import Square from "../Square/Square"
 import {useParams} from "react-router-dom";
@@ -7,6 +8,7 @@ const Board = () => {
     let { id } = useParams();
     const [isMyTurn, setIsMyTurn] = useState(true);
     const [state, setState] = useState(Array(9).fill(null));
+    const [socket, setSocket] = useState<Socket | null>(null)
 
     const isVictory = (cells: (string | null)[]) : boolean => {
         return [
@@ -24,25 +26,68 @@ const Board = () => {
                     cells[comb[0]] != null) != -1
     }
 
-    const onClick = (idx: number) => {
-        if (isMyTurn) {
+    const playTurn = (idx: number, other: boolean) => {
+        if (other) {
+            state[idx] = "O";
+            setIsMyTurn(true);
+        } else {
             state[idx] = "X";
             setIsMyTurn(false);
+        }
 
-            setState(state);
+        console.log("set state");
+        setState(state);
 
-            if (isVictory(state)) {
-                alert("Victory");
-                setState(Array(9).fill(null));
-                return;
-            }
+        // should be server sided
+        // if (isVictory(state)) {
+        //     alert("Victory");
+        //     setState(Array(9).fill(null));
+        //     return;
+        // }
 
-            if (state.findIndex(s => s == null) == -1) {
-                alert("Draw");
-                setState(Array(9).fill(null));
-            }
+        // if (state.findIndex(s => s == null) == -1) {
+        //     alert("Draw");
+        //     setState(Array(9).fill(null));
+        // }
+    }
+
+    const onClick = (idx: number) => {
+        if (isMyTurn && socket != null) {
+            socket.emit("play", idx);            
+            playTurn(idx, false);         
         }
     }
+
+    useEffect(() => {
+        let localSocket = socket;
+
+        if(localSocket === null)
+        {
+            localSocket = io("http://localhost:3001");
+            setSocket(localSocket);
+        }
+        
+        localSocket.emit("joinGame", id);    
+
+        localSocket.on("play", (msg: any) => {
+            console.log("got play with " + msg);
+            let idx: number = msg.message;
+
+            // if (state[idx] != null) {
+            //     return;
+            // }
+
+            playTurn(idx, true);
+        });
+      
+        return () => {
+            if (socket != null) {
+                socket.offAny();
+
+                socket.disconnect();
+            }            
+        };
+      }, [socket, state]);
 
     return (
         <div className="w-full h-full flex justify-center items-center bg-[#1A2238] flex-col gap-6">
