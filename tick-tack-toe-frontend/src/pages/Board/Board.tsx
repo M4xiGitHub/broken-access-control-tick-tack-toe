@@ -1,10 +1,12 @@
+import {Navigate, redirect, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
 import Square from "../Square/Square"
 import { socketIO } from "../../Socket";
-import {useParams} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Board = () => {
+    const navigate = useNavigate();
     let { id } = useParams();
     const [isMyTurn, setIsMyTurn] = useState(false);
     const [state, setState] = useState(Array(9).fill(null));
@@ -24,7 +26,7 @@ const Board = () => {
     const onClick = (idx: number) => {
         if (isMyTurn && socketIO != null) {
             socketIO.emit("playTurn", {game: id, turn: idx});            
-            playTurn(idx, false);         
+            playTurn(idx, false);  
         }
     }
 
@@ -38,30 +40,34 @@ const Board = () => {
 
     const opponentDisconnected = () => {
         alert("opponentDisconnected");
+        navigate("/home");
     }
 
     const gameAllreadyFull = () => {
         alert("game Allready full");
+        navigate("/home");
     }
 
     const gameNotFound = () => {
         alert("game not found");
+        navigate("/home");
     }
 
-    const turnNotAllowed = () => {
+    const turnNotAllowed = (msg: number) => {
+        playTurn(msg, true);
         alert("No allowed move");
     }
 
     const gameDraw = () => {
-        alert("DRAW");
+        navigate("/draw")
     }
 
     const gameWon = () => {
-        alert("WON");
+        navigate("/win");
     }
 
     const gameLost = () => {
-        alert("LOST");
+        navigate("/loose");
     }
 
     useEffect(() => {

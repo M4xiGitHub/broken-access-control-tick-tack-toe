@@ -1,9 +1,50 @@
 import { atom, useAtom } from 'jotai';
 
 import { atomWithStorage } from 'jotai/utils';
+import exp from 'constants';
+
+export interface UserAtom{
+  userId : number;
+  username : string;
+  gamesDraw : number;
+  gamesDisconnected : number;
+  gamesOtherDisconnected : number;
+  gamesPlayed : number;
+  gamesWon: number;
+  gamesLost: number;
+}
 
 export const authenticated = atomWithStorage('authStatus', false);
-export const userAtom = atom({});
+export const userAtom = atom<null|UserAtom>(null);
+export const userId = atomWithStorage('userId', 0);
+
+export const registerAtom = atom(
+  null,
+  async (get, set, credentials) => {
+    const { username, password } = credentials as { username: string, password: string };
+    try {
+      const response = await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to login !!!!!');
+      }
+      const data = await response.json();
+      set(authenticated, true);
+      set(userId, data.userId);
+      set(userAtom, data);
+      console.log('Register successful:', data);
+    } catch (error) {
+      console.error('Register failed:', error);
+      set(authenticated, false);
+      throw new Error("");      
+    }
+  }
+);
 
 export const loginAtom = atom(
   null,
@@ -18,17 +59,17 @@ export const loginAtom = atom(
         body: JSON.stringify({ username, password })
       });
       if (!response.ok) {
-        throw new Error('Failed to login');
+        throw new Error('Failed to login !!!!!');
       }
       const data = await response.json();
       set(authenticated, true);
-      console.log(userAtom);
-        
+      set(userId, data.userId);
       set(userAtom, data);
       console.log('Login successful:', data);
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('Login failed :(   :', error);
       set(authenticated, false);
+      throw new Error("");      
     }
   }
 );

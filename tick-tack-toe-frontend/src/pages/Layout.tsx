@@ -2,13 +2,18 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 
 import Logo from "../images/logo.png";
+import { useAtom } from "jotai";
+import {userId} from "../UserAtom";
 
 const Layout = () => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
+    const [userID,_] = useAtom(userId);
 
+    const handleLogout = () => {
         localStorage.removeItem('authStatus');
+        localStorage.removeItem('userId');
+
         navigate('/');
     }
     return (
@@ -44,7 +49,7 @@ const Layout = () => {
                             
                             <li>
                                 <Link
-                                    to="/stats/1"
+                                    to={`/stats/${userID}`}
                                     className={
                                         "block py-2 px-3  text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                                     }

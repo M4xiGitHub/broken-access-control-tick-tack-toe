@@ -5,9 +5,11 @@ export class GameService {
 
     private readonly players: (string | null)[] = Array(2).fill(null);
 
+    private readonly userIds: (number | null)[] = Array(2).fill(null);;
+
     private readonly gameField: (string | null)[] = Array(9).fill(null);
 
-    public join(player: string): boolean {
+    public join(player: string, userId: number): boolean {
 
         const freePlayerIdx = this.players.findIndex(p => p == null);
 
@@ -16,6 +18,7 @@ export class GameService {
         }
 
         this.players[freePlayerIdx] = player;
+        this.userIds[freePlayerIdx] = userId;
 
         return true;
     }
@@ -96,5 +99,15 @@ export class GameService {
             draw: this.gameField.findIndex(s => s == null) == -1,
             other: this.players.filter(p => p != player)[0]
         }
+    }
+
+    public GetUserId(player: string): number {
+        const playerIdx = this.players.indexOf(player);
+
+        if (playerIdx == -1) {
+            throw new Error();
+        }
+
+        return this.userIds[playerIdx];
     }
 }

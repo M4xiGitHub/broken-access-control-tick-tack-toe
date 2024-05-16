@@ -8,14 +8,16 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Component }) => {
     const { isAuthenticated, isLoading } = useAuth();
-
     if (isLoading) {
         return <div className="bg-[#1A2238]">Loading...</div>; 
     }
-    if(!isAuthenticated) {
+    else if(!isAuthenticated) {
         console.log("Not authenticated, redirecting to login");
         console.log(isAuthenticated);
         console.log(isLoading);
+    }
+    else{
+        console.log("Authenticated");
     }
     return isAuthenticated ? Component : <Navigate to="/" replace />;
 };

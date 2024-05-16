@@ -2,21 +2,23 @@ import React, { useState } from "react";
 
 import Logo from "../images/logo.png";
 import { loginAtom } from "../UserAtom";
+import { registerAtom } from "../UserAtom";
 import { useAtom } from "jotai";
 import { useAuth } from "../AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [, login] = useAtom(loginAtom);
+    const [, register] = useAtom(registerAtom);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const { isAuthenticated, setAuthStatus } = useAuth();
 
+    
     const handleLogin = async () => {
-        login({ username, password }).then(() => setAuthStatus(true))
-            .then(() => navigate("/home"));
-
+        login({ username, password })
+            .then(() => navigate("/home")).catch(() => {register({username,password}).then(() => setAuthStatus(true)).then(() => navigate("/home"))});
       };
 
     return (

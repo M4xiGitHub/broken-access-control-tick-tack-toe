@@ -4,9 +4,11 @@ import { socketIO } from "../Socket";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { userAtom } from "../UserAtom";
+import { userId } from "../UserAtom";
 import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
+    const [userID, ] = useAtom(userId);
     const [user, setUser] = useAtom(userAtom);
     const [gameId, setGameId] = useState("");
     const navigate = useNavigate();
@@ -15,7 +17,8 @@ export default function Home() {
       if(gameId.length === 0){
         return;
       }
-      
+      socketIO.emit("joinGame", {uuid: gameId, userId: userID});
+
       var route = `/game/${gameId}`;
       navigate(route);
     };
@@ -23,10 +26,11 @@ export default function Home() {
     const handleHost = () => {
         const uuid = uuidv4(); // Generate a UUID
 
-        socketIO.emit("joinGame", uuid);
+        socketIO.emit("joinGame", {uuid: uuid, userId: userID});
+        console.log("asdfasdf");
+
         var route = `/game/${uuid}`;
         navigate(route);
-        console.log("asdfasdf");
     };
 
     return (

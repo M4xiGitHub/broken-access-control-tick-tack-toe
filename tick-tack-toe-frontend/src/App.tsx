@@ -20,8 +20,9 @@ function App() {
         <BrowserRouter>
         <AuthProvider>
                 <Routes>
+                <Route index element={<Login />} />
+
                     <Route path="/" element={<Layout />}>
-                        <Route index element={<Login />} />
                         <Route
                             path="home"
                             element={<ProtectedRoute element={<Home />} />}
