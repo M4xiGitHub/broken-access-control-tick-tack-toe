@@ -14,7 +14,7 @@
     Triggered: When a client sends a joinGame message but the game is allready full
     Payload: None
 
-## startGame
+### startGame
 
     Description: Informs a client that the game starts
     Triggered: When a client joins a game that allready has a other player
