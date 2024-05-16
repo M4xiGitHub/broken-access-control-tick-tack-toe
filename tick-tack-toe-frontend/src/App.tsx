@@ -5,6 +5,7 @@ import { atom, useAtom } from "jotai";
 import { AuthProvider } from "./AuthProvider";
 import Board from "./pages/Board/Board";
 import Draw from "./pages/Draw";
+import EasterEgg from "./pages/EasterEgg";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import Login from "./pages/Login";
@@ -28,11 +29,11 @@ function App() {
                             element={<ProtectedRoute element={<Home />} />}
                         />
                         <Route
-                            path="game/:id"
+                            path="game"
                             element={<ProtectedRoute element={<Board />} />}
                         />
                         <Route
-                            path="stats/:id"
+                            path="stats"
                             element={<ProtectedRoute element={<Stats />} />}
                         />
                         <Route
@@ -46,6 +47,10 @@ function App() {
                         <Route
                             path="loose"
                             element={<ProtectedRoute element={<Loose />} />}
+                        />
+                        <Route
+                            path="easter-egg"
+                            element={<ProtectedRoute element={<EasterEgg />} />}
                         />
                         <Route path="*" element={<NoPage />} />
                     </Route>

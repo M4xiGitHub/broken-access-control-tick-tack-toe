@@ -15,6 +15,10 @@ export interface UserAtom{
 }
 
 export const authenticated = atomWithStorage('authStatus', false);
+export const jwt = atomWithStorage('jwt', null);
+
+export const gameId = atom<null|string>(null);
+
 export const userAtom = atom<null|UserAtom>(null);
 export const userId = atomWithStorage('userId', 0);
 
@@ -35,13 +39,12 @@ export const registerAtom = atom(
       }
       const data = await response.json();
       set(authenticated, true);
-      set(userId, data.userId);
-      set(userAtom, data);
-      console.log('Register successful:', data);
+      set(jwt, data.access_token);
+      // console.log('Register successful:', data);
     } catch (error) {
-      console.error('Register failed:', error);
-      set(authenticated, false);
-      throw new Error("");      
+        // console.error('Register failed:', error);
+        set(authenticated, false);
+        throw new Error("");      
     }
   }
 );
@@ -63,11 +66,11 @@ export const loginAtom = atom(
       }
       const data = await response.json();
       set(authenticated, true);
-      set(userId, data.userId);
-      set(userAtom, data);
-      console.log('Login successful:', data);
+      set(jwt, data.access_token);
+
+      // console.log('Login successful:', data);
     } catch (error) {
-      console.error('Login failed :(   :', error);
+      // console.error('Login failed :(   :', error);
       set(authenticated, false);
       throw new Error("");      
     }

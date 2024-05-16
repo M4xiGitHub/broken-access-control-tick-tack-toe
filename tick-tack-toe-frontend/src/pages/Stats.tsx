@@ -1,29 +1,31 @@
 import React, { useEffect } from 'react'
 
 import { UserAtom } from '../UserAtom';
+import { jwt } from '../UserAtom';
 import { useAtom } from 'jotai';
 import {useParams} from "react-router-dom";
 
 export default function Stats () {
-    let { id } = useParams();
     const [user, setUser] = React.useState<null|UserAtom>(null);
-    
+    const [jwToken, ] = useAtom(jwt);
     const fetchStats = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/user/${id}`, {
+            const response = await fetch(`http://localhost:3001/user`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('jwt')?.replace(/"/g, ''),
               }
             });
             if (!response.ok) {
               throw new Error('Failed to Fetch');
             }
             const data = await response.json();
+            // console.log('data:', data);
             setUser(data);
         }
         catch (error) {
-            console.error('Failed to fetch:', error);
+            // console.error('Failed to fetch:', error);
         }
     }
     useEffect(() => {

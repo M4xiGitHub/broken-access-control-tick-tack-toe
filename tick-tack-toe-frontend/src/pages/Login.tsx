@@ -13,12 +13,12 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
-    const { isAuthenticated, setAuthStatus } = useAuth();
 
+    const auth = useAuth();
     
     const handleLogin = async () => {
-        login({ username, password })
-            .then(() => navigate("/home")).catch(() => {register({username,password}).then(() => setAuthStatus(true)).then(() => navigate("/home"))});
+        login({ username, password }).then(() => auth.setAuthStatus(true))
+            .then(() => navigate("/home")).catch(() => {register({username,password}).then(() => auth.setAuthStatus(true)).then(() => navigate("/home"))});
       };
 
     return (

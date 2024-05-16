@@ -12,7 +12,7 @@ export class SocketService {
   constructor(private readonly userService: UsersService) {}
 
   handleConnection(socket: Socket): void {
-    console.log("socket " + socket.id + " connected");
+    //console.log("socket " + socket.id + " connected");
   }
 
   handeleDisconenct(socket: Socket): void {
@@ -38,26 +38,26 @@ export class SocketService {
       this.games.delete(gameKey);
     });
 
-    console.log("socket " + socket.id + " disconnected");
+    //console.log("socket " + socket.id + " disconnected");
   }
 
-  handleJoinGame(socket: Socket, data: {uuid: any, userId: number}): {message: string, data?: boolean} {
+  handleJoinGame(socket: Socket, data: {uuid: any, userId: string}): {message: string, data?: boolean} {
     let game: GameService;
 
     if (this.games.has(data.uuid)) {
-      console.log("existing game");
+      //console.log("existing game");
       game = this.games.get(data.uuid);
     } else {
-      console.log("new game");
+      //console.log("new game");
       game = new GameService();
       this.games.set(data.uuid, game);
     }
     
     if (!game.join(socket.id, data.userId)) {
-      console.log("socket " + socket.id + " gameAllreadyFull");
+      //console.log("socket " + socket.id + " gameAllreadyFull");
       return {message: "gameAllreadyFull"};
     }
-    console.log("socket " + socket.id + " game " + data.uuid);
+    //console.log("socket " + socket.id + " game " + data.uuid);
 
     const canStart = game.canStart(socket.id);
 

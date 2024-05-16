@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Request } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 
@@ -7,8 +7,8 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Get(":id")
-  GetUserStatistics(@Param('id') id: number) {
-    return this.usersService.findOnePerId(id);
+  @Get()
+  GetUserStatistics(@Request() req) {
+    return this.usersService.findOnePerId(req.user.user.userId);
   }
 }

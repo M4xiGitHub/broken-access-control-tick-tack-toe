@@ -12,12 +12,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element: Component }) =
         return <div className="bg-[#1A2238]">Loading...</div>; 
     }
     else if(!isAuthenticated) {
-        console.log("Not authenticated, redirecting to login");
-        console.log(isAuthenticated);
-        console.log(isLoading);
+        // console.log("Not authenticated, redirecting to login");
+        // console.log(isAuthenticated);
+        // console.log(isLoading);
     }
     else{
-        console.log("Authenticated");
+        // console.log("Authenticated");
     }
     return isAuthenticated ? Component : <Navigate to="/" replace />;
 };

@@ -1,8 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
+import { v4 as uuidv4 } from "uuid";
+
 // This should be a real class/interface representing a user entity
 export type User = {
-  userId: number,
+  userId: string,
   username: string,
   password: string,
   gamesPlayed: number,
@@ -17,7 +19,7 @@ export type User = {
 export class UsersService {
   private readonly users = [
     {
-      userId: 1,
+      userId: uuidv4(),
       username: 'test1',
       password: 'changeme',
       gamesPlayed: 100,
@@ -28,7 +30,7 @@ export class UsersService {
       gamesLost: 5
     },
     {
-      userId: 2,
+      userId: uuidv4(),
       username: 'test2',
       password: 'guess',
       gamesPlayed: 100,
@@ -44,7 +46,7 @@ export class UsersService {
     return this.users.find(user => user.username === username);
   }
 
-  async findOnePerId(userId: number){
+  async findOnePerId(userId: string){
     const user = this.users.find(user => user.userId == userId);
 
     if (!user) {
@@ -56,11 +58,8 @@ export class UsersService {
   }
 
   addOne(username: string, password: string) : void {
-    let numbers = this.users.map(user => user.userId);
-    let lastNumber = Math.max(...numbers);
-
     this.users.push({
-      userId: lastNumber+1,
+      userId: uuidv4(),
       username: username,
       password: password,
       gamesPlayed: 0,
@@ -73,7 +72,7 @@ export class UsersService {
   }
 
 
-  addWinToUser(userId: number) : void {
+  addWinToUser(userId: string) : void {
     const userIdx = this.users.findIndex(user => user.userId == userId);
 
     if (userIdx == -1) {
@@ -84,7 +83,7 @@ export class UsersService {
     this.users[userIdx].gamesPlayed++;
   }
 
-  addLoseToUser(userId: number) : void {
+  addLoseToUser(userId: string) : void {
     const userIdx = this.users.findIndex(user => user.userId == userId);
 
     if (userIdx == -1) {
@@ -95,7 +94,7 @@ export class UsersService {
     this.users[userIdx].gamesPlayed++;
   }
 
-  addDrawToUser(userId: number) : void {
+  addDrawToUser(userId: string) : void {
     const userIdx = this.users.findIndex(user => user.userId == userId);
 
     if (userIdx == -1) {
@@ -106,7 +105,7 @@ export class UsersService {
     this.users[userIdx].gamesPlayed++;
   }
 
-  addDisconenctToUser(userId: number) : void {
+  addDisconenctToUser(userId: string) : void {
     const userIdx = this.users.findIndex(user => user.userId == userId);
 
     if (userIdx == -1) {
@@ -117,7 +116,7 @@ export class UsersService {
     this.users[userIdx].gamesPlayed++;
   }
 
-  addOtherDisconnected(userId: number) : void {
+  addOtherDisconnected(userId: string) : void {
     const userIdx = this.users.findIndex(user => user.userId == userId);
 
     if (userIdx == -1) {

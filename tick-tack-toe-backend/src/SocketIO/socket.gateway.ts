@@ -18,7 +18,7 @@ export class SocketGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage("joinGame")
-  handleJoinGameMessage(client: any, data: {uuid: any, userId: number}) {
+  handleJoinGameMessage(client: any, data: {uuid: any, userId: string}) {
     const message = this.socketService.handleJoinGame(client, data);
 
     if (!message) {

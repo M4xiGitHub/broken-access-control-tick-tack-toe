@@ -1,37 +1,61 @@
 import React, { useState } from "react";
 
+import { gameId } from "../UserAtom";
 import { socketIO } from "../Socket";
 import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { userAtom } from "../UserAtom";
-import { userId } from "../UserAtom";
+import { userId } from './../UserAtom';
 import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
-    const [userID, ] = useAtom(userId);
-    const [user, setUser] = useAtom(userAtom);
-    const [gameId, setGameId] = useState("");
+    const [userID, setUserId ] = React.useState("");
+
+    const [gameID, setGame] = useAtom(gameId);
     const navigate = useNavigate();
     const handleJoin = () => {
       
-      if(gameId.length === 0){
+      if(gameID?.length === 0){
         return;
       }
-      socketIO.emit("joinGame", {uuid: gameId, userId: userID});
+      socketIO.emit("joinGame", {uuid: gameID, userId: userID});
 
-      var route = `/game/${gameId}`;
+      var route = `/game`;
       navigate(route);
     };
 
+    React.useEffect(() => {
+        fetchID();
+    }, []);
+
     const handleHost = () => {
         const uuid = uuidv4(); // Generate a UUID
-
-        socketIO.emit("joinGame", {uuid: uuid, userId: userID});
-        console.log("asdfasdf");
-
-        var route = `/game/${uuid}`;
-        navigate(route);
+        setGame(uuid);
+        socketIO.emit("joinGame", {uuid: gameID, userId: userID});
+        navigate("/game");
     };
+
+
+    const fetchID = async () => {
+        try {
+            const response = await fetch(`http://localhost:3001/user`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('jwt')?.replace(/"/g, ''),
+              }
+            });
+            if (!response.ok) {
+              throw new Error('Failed to Fetch');
+            }
+            const data = await response.json();
+            // console.log('data:', data);
+            setUserId(data.userId);
+        }
+        catch (error) {
+            // console.error('Failed to fetch:', error);
+        }
+    }
 
     return (
         <div className="bg-[#1A2238] w-full h-full flex flex-col items-center justify-center gap-6">
@@ -54,8 +78,8 @@ export default function Home() {
                 <input
                     placeholder="Lobby Key"
                     className="p-2 w-72 h-8 rounded"
-                    value={gameId}
-                    onChange={(e) => setGameId(e.target.value)}
+                    value={gameID!}
+                    onChange={(e) => setGame(e.target.value)}
                 ></input>
                 <button
                     onClick={handleJoin}

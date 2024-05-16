@@ -2,12 +2,14 @@ import {Navigate, redirect, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 
 import Square from "../Square/Square"
+import { gameId } from "../../UserAtom";
 import { socketIO } from "../../Socket";
+import { useAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 
 const Board = () => {
     const navigate = useNavigate();
-    let { id } = useParams();
+    const [gameID, setGame] = useAtom(gameId);
     const [isMyTurn, setIsMyTurn] = useState(false);
     const [state, setState] = useState(Array(9).fill(null));
 
@@ -25,7 +27,7 @@ const Board = () => {
 
     const onClick = (idx: number) => {
         if (isMyTurn && socketIO != null) {
-            socketIO.emit("playTurn", {game: id, turn: idx});            
+            socketIO.emit("playTurn", {game: gameID, turn: idx});            
             playTurn(idx, false);  
         }
     }
@@ -40,16 +42,19 @@ const Board = () => {
 
     const opponentDisconnected = () => {
         alert("opponentDisconnected");
+        setGame(null);
         navigate("/home");
     }
 
     const gameAllreadyFull = () => {
         alert("game Allready full");
+        setGame(null);
         navigate("/home");
     }
 
     const gameNotFound = () => {
         alert("game not found");
+        setGame(null);
         navigate("/home");
     }
 
@@ -59,18 +64,26 @@ const Board = () => {
     }
 
     const gameDraw = () => {
-        navigate("/draw")
+        setGame(null);
+        navigate("/draw");
     }
 
     const gameWon = () => {
+        setGame(null);
         navigate("/win");
     }
 
     const gameLost = () => {
+        setGame(null);
         navigate("/loose");
     }
 
     useEffect(() => {
+        if (!gameID) {
+            setGame(null);
+            navigate("/easter-egg");
+        }
+
         socketIO.on("opponentPlayedTurn", opponentPlayedTurn);
         socketIO.on("startGame", startGame);
         socketIO.on("opponentDisconnected", opponentDisconnected);
@@ -97,7 +110,7 @@ const Board = () => {
     return (
         <div className="w-full h-full flex justify-center items-center bg-[#1A2238] flex-col gap-6">
         <h1 className="text-6xl font-extrabold text-white tracking-widest flex gap-2 items-baseline">
-            Game: <p className="text-blue-700 text-3xl">{id}</p>
+            Game: <p className="text-blue-700 text-3xl">{gameID}</p>
         </h1>
         <h1 className="text-6xl font-extrabold text-white tracking-widest">
             {isMyTurn ? "Your turn" : "Opponents turn"}
