@@ -4,13 +4,16 @@ import { atom, useAtom } from "jotai";
 
 import { AuthProvider } from "./AuthProvider";
 import Board from "./pages/Board/Board";
+import Draw from "./pages/Draw";
 import Home from "./pages/Home";
 import Layout from "./pages/Layout";
 import Login from "./pages/Login";
+import Loose from "./pages/Loose";
 import NoPage from "./pages/NoPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ReactDOM from "react-dom/client";
 import Stats from "./pages/Stats";
+import Win from "./pages/Win";
 
 function App() {
     return (
@@ -30,6 +33,18 @@ function App() {
                         <Route
                             path="stats/:id"
                             element={<ProtectedRoute element={<Stats />} />}
+                        />
+                        <Route
+                            path="win"
+                            element={<ProtectedRoute element={<Win />} />}
+                        />
+                        <Route
+                            path="draw"
+                            element={<ProtectedRoute element={<Draw />} />}
+                        />
+                        <Route
+                            path="loose"
+                            element={<ProtectedRoute element={<Loose />} />}
                         />
                         <Route path="*" element={<NoPage />} />
                     </Route>

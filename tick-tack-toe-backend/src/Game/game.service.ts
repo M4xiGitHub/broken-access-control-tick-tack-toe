@@ -24,14 +24,17 @@ export class GameService {
         return this.players;
     }
 
-    public canStart(): {start: boolean, receiver: string[]} {
+    public canStart(player: string): {start: boolean, other?: string, myFirstTurn?: boolean} {
+        if (this.players.indexOf(player) == -1) {
+            return {start: false};
+        }
+
         const freePlayerIdx = this.players.findIndex(p => p == null);
 
         if (freePlayerIdx != -1) {
-            return {start: false, receiver: []};
+            return {start: false};
         }
-
-        return {start: true, receiver: this.players};
+        return {start: true, other: this.players.filter(p => p != player)[0], myFirstTurn: false};
     }
 
     public play(player: string, idx: number): {allowed: boolean, idx: number, receiver: string |null} {
@@ -50,9 +53,9 @@ export class GameService {
         return {allowed: true, idx: idx, receiver: this.players.find(p => p != player)};
     }
 
-    public IsVictory (): {victory: boolean, winner: string| null, loser: string | null}  {
+    public IsVictory (): {victory: boolean, loser?: string}  {
         if (this.players.findIndex(p => p == null) != -1) {
-            return {victory: false, winner: null, loser: null};
+            return {victory: false};
         }
 
         const combs = [
@@ -72,22 +75,26 @@ export class GameService {
             this.gameField[comb[0]] != null);
 
         if (winnerComb == -1){
-            return {victory: false, winner: null, loser: null};
+            return {victory: false};
         }
 
         const winner = this.gameField[combs[winnerComb][0]];
 
-        return {victory: true, winner: winner, loser: this.players.find(p => p != winner)}
+        return {victory: true, loser: this.players.find(p => p != winner)}
     }
 
-    public IsDraw(): {draw: boolean, receiver: string[]} {
+    public IsDraw(player: string): {draw: boolean, other?: string} {
+        if (this.players.indexOf(player) == -1) {
+            return {draw: false};
+        }
+
         if (this.players.findIndex(p => p == null) != -1) {
-            return {draw: false, receiver: []};
+            return {draw: false};
         }
 
         return {
             draw: this.gameField.findIndex(s => s == null) == -1,
-            receiver: this.players
+            other: this.players.filter(p => p != player)[0]
         }
     }
 }

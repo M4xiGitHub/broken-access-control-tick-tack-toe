@@ -3,8 +3,8 @@ import { atom, useAtom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
 export const authenticated = atomWithStorage('authStatus', false);
+export const userAtom = atom({});
 
-// Atom for login logic remains unchanged
 export const loginAtom = atom(
   null,
   async (get, set, credentials) => {
@@ -22,6 +22,9 @@ export const loginAtom = atom(
       }
       const data = await response.json();
       set(authenticated, true);
+      console.log(userAtom);
+        
+      set(userAtom, data);
       console.log('Login successful:', data);
     } catch (error) {
       console.error('Login failed:', error);
