@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         var status = localStorage.getItem('authStatus');
-        console.log('status:', status);
+        // console.log('status:', status);
             setAuthStatus(status === 'true');        
     }, []);
 

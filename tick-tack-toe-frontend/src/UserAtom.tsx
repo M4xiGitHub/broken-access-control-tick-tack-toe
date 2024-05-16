@@ -17,6 +17,7 @@ export interface UserAtom{
 export const authenticated = atomWithStorage('authStatus', false);
 export const userAtom = atom<null|UserAtom>(null);
 export const userId = atomWithStorage('userId', 0);
+export const gameId = atom<null|string>(null);
 
 export const registerAtom = atom(
   null,

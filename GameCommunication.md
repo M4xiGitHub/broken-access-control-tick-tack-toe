@@ -62,7 +62,7 @@
 
     Description: Request to join a game
     Responses: gameAllreadyFull, startGame
-    Payload: any -- any string, number, etc that could identify a game
+    Payload: {uuid: any, userId: string} -- any string, number, etc that could identify a game and the user identifier
 
 ### playTurn
 
