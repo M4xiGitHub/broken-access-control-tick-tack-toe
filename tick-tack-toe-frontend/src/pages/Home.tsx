@@ -9,8 +9,7 @@ import { userId } from './../UserAtom';
 import { v4 as uuidv4 } from "uuid";
 
 export default function Home() {
-    const [userID, setUserId ] = React.useState("");
-
+    const [userID, setUserId] = useAtom(userId);
     const [gameID, setGame] = useAtom(gameId);
     const navigate = useNavigate();
     const handleJoin = () => {
@@ -31,7 +30,7 @@ export default function Home() {
     const handleHost = () => {
         const uuid = uuidv4(); // Generate a UUID
         setGame(uuid);
-        socketIO.emit("joinGame", {uuid: gameID, userId: userID});
+        socketIO.emit("joinGame", {uuid: uuid, userId: userID});
         navigate("/game");
     };
 
